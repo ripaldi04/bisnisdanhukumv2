@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('style'); ?>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <style>
@@ -79,11 +77,6 @@
 
                                         $waLink = "https://wa.me/{$waNumber}?text=" . urlencode($message);
                                     ?>
-
-                                    <a href="<?php echo e($waLink); ?>" target="_blank"
-                                        class="inline-flex bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition">
-                                        Download Now
-                                    </a>
                                 <?php else: ?>
                                     <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-lg">
                                         WhatsApp belum dikonfigurasi oleh admin (nomor / template pesan kosong).

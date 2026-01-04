@@ -77,11 +77,6 @@
 
                                         $waLink = "https://wa.me/{$waNumber}?text=" . urlencode($message);
                                     @endphp
-
-                                    <a href="{{ $waLink }}" target="_blank"
-                                        class="inline-flex bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition">
-                                        Download Now
-                                    </a>
                                 @else
                                     <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-lg">
                                         WhatsApp belum dikonfigurasi oleh admin (nomor / template pesan kosong).
