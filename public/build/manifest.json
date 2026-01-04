@@ -1,0 +1,17 @@
+{
+  "public/fonts/Bison-Bold.ttf": {
+    "file": "assets/Bison-Bold-2jtfSg3i.ttf",
+    "src": "public/fonts/Bison-Bold.ttf"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-B1Ttz9he.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-DLXkxiZ3.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  }
+}
