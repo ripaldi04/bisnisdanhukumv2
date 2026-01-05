@@ -21,6 +21,7 @@ Route::prefix('ebooks')->name('ebooks.')->group(function () {
     Route::get('/{id}/download', [EbookController::class, 'download'])->name('download')->middleware('auth');
     Route::get('/{id}/buy', [EbookController::class, 'buy'])->name('buy')->middleware('auth');
     Route::post('/{id}/download-form', [EbookController::class, 'downloadForm'])->name('download-form');
+    Route::post('/{id}/purchase-form', [EbookController::class, 'purchaseForm'])->name('purchase-form');
     Route::get('/{id}', [EbookController::class, 'show'])->name('show');
 });
 
@@ -28,6 +29,10 @@ Route::prefix('ebooks')->name('ebooks.')->group(function () {
 Route::post('/midtrans/callback', [PaymentController::class, 'callback'])
     ->withoutMiddleware([VerifyCsrfToken::class]);
 Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('payment.finish');
+
+// CALLBACK MIDTRANS EBOOK (TIDAK PAKAI CSRF)
+Route::post('/ebooks/midtrans/callback', [EbookController::class, 'callback'])
+    ->withoutMiddleware([VerifyCsrfToken::class]);
 
 use App\Http\Controllers\EbookClaimDiscountController;
 
