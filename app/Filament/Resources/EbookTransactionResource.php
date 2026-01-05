@@ -31,21 +31,31 @@ class EbookTransactionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')
-                    ->label('User')
-                    ->searchable(),
-
                 Tables\Columns\TextColumn::make('ebook.title')
                     ->label('Ebook')
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Name')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('email')
+                    ->label('Email')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('whatsapp')
+                    ->label('WhatsApp')
+                    ->searchable(),
+
                 Tables\Columns\TextColumn::make('trx_id')
                     ->label('Trx ID')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('amount')
                     ->money('IDR')
-                    ->label('Amount'),
+                    ->label('Amount')
+                    ->toggleable(),
 
                 Tables\Columns\BadgeColumn::make('status')
                     ->colors([
@@ -53,11 +63,13 @@ class EbookTransactionResource extends Resource
                         'success' => 'Paid',
                         'danger' => 'Failed',
                     ])
-                    ->label('Status'),
+                    ->label('Status')
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('paid_at')
                     ->label('Paid At')
-                    ->dateTime(),
+                    ->dateTime()
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created')
@@ -65,9 +77,39 @@ class EbookTransactionResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                    ->options([
+                        'Pending' => 'Pending',
+                        'Paid' => 'Paid',
+                        'Failed' => 'Failed',
+                        'Expired' => 'Expired',
+                    ]),
+
+                Tables\Filters\SelectFilter::make('ebook')
+                    ->relationship('ebook', 'title'),
+
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('created_from')
+                            ->label('Created From'),
+                        Forms\Components\DatePicker::make('created_until')
+                            ->label('Created Until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    }),
             ])
             ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

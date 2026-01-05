@@ -17,4 +17,9 @@ class Ebook extends Model
     {
         return $this->hasMany(EbookTransaction::class);
     }
+
+    public function landingDescription()
+    {
+        return $this->hasOne(EbookLandingDescription::class);
+    }
 }

@@ -109,7 +109,7 @@
                         </p>
                     </div>
                     <button type="submit"
-                        class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold">
+                        class="w-full bg-yellow-600 text-white py-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold">
                         Download Now
                     </button>
                     <p class="text-xs text-gray-500 text-center">Dengan mengklik tombol di atas, Anda setuju bahwa data Anda

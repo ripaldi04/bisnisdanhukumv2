@@ -8,6 +8,7 @@ use App\Models\Benefit;
 use App\Models\Book;
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\Ebook;
 use App\Models\Faq;
 use App\Models\Module;
 use App\Models\PaymentMethod;
@@ -37,6 +38,13 @@ class FrontController extends Controller
         $uniquenesses = Uniqueness::where('is_active', true)->get();
         $articles = Article::where('status', 'Published')->orderBy('viewed', 'desc')->take(3)->get();
         return view('home', compact('testimonials', 'faqs', 'course', 'benefits', 'uniquenesses', 'articles'));
+    }
+
+    public function landing()
+    {
+        $ebooks = Ebook::with('landingDescription')->where('status', 'published')->get();
+
+        return view('landing', compact('ebooks'));
     }
 
     public function pricing()
@@ -90,9 +98,9 @@ class FrontController extends Controller
         $response = Http::withHeaders([
             'Authorization' => 'JMH7E2kvnrJ9nv3JrdCu',
         ])->post('https://api.fonnte.com/send', [
-            'target' => $user->no_hp,
-            'message' => "Dear Bapak/Ibu $user->name\n\nSemangat Sukses\n\nUntuk menikmati sajian ilmu luar biasa dari Bisnis dan Hukum, Anda dapat membayar membership dengan melakukan transfer sejumlah Rp $formatHarga sebelum $expires\n\nFaktur Pembayaran:\nhttps://bisnisdanhukum.com/checkout/$invoice->trx_id\n\nUntuk informasi tiket,\nSilahkan login akun pada halaman berikut:\nhttps://bisnisdanhukum.com/login"
-        ]);
+                    'target' => $user->no_hp,
+                    'message' => "Dear Bapak/Ibu $user->name\n\nSemangat Sukses\n\nUntuk menikmati sajian ilmu luar biasa dari Bisnis dan Hukum, Anda dapat membayar membership dengan melakukan transfer sejumlah Rp $formatHarga sebelum $expires\n\nFaktur Pembayaran:\nhttps://bisnisdanhukum.com/checkout/$invoice->trx_id\n\nUntuk informasi tiket,\nSilahkan login akun pada halaman berikut:\nhttps://bisnisdanhukum.com/login"
+                ]);
 
         event(new InvoiceCreated($invoice));
 
@@ -122,7 +130,8 @@ class FrontController extends Controller
         }
         if ($invoice->proof) {
             return redirect()->route('dashboard')->with('info', 'Pembayaran anda telah kami terima, mohon menunggu untuk diverifikasi terlebih dahulu.');
-        };
+        }
+        ;
 
         $course = Course::first();
         $paymentMethods = PaymentMethod::where('is_active', true)->get();
@@ -215,22 +224,26 @@ class FrontController extends Controller
     {
         $course = Course::first();
         $totalModules = Module::count();
-        $modules = Module::with(['subModules' => function ($query) {
-            $query->where('published_date', '<=', now());
-        }])->orderBy('order', 'asc')->get();
+        $modules = Module::with([
+            'subModules' => function ($query) {
+                $query->where('published_date', '<=', now());
+            }
+        ])->orderBy('order', 'asc')->get();
         $totalSubModules = $modules->sum(function ($module) {
             return $module->subModules->count();
         });
         $faqs = Faq::where('is_active', true)->get();
-        return view('learn', compact('course', 'modules',  'totalSubModules', 'totalModules', 'faqs'));
+        return view('learn', compact('course', 'modules', 'totalSubModules', 'totalModules', 'faqs'));
     }
     public function learning($moduleId, $subModuleId)
     {
         $course = Course::first();
         $totalModules = Module::count();
-        $modules = Module::with(['subModules' => function ($query) {
-            $query->where('published_date', '<=', now());
-        }])->orderBy('order', 'asc')->get();
+        $modules = Module::with([
+            'subModules' => function ($query) {
+                $query->where('published_date', '<=', now());
+            }
+        ])->orderBy('order', 'asc')->get();
         $totalSubModules = $modules->sum(function ($module) {
             return $module->subModules->count();
         });
@@ -246,7 +259,7 @@ class FrontController extends Controller
             ->where('sub_module_id', $subModuleId)
             ->first();
 
-        return view('learning', compact('course', 'subModule', 'modules',  'totalSubModules', 'totalModules', 'userProgress'));
+        return view('learning', compact('course', 'subModule', 'modules', 'totalSubModules', 'totalModules', 'userProgress'));
     }
 
     public function completeSubModule($subModuleId)
@@ -271,9 +284,11 @@ class FrontController extends Controller
     {
         $userId = Auth::id();
         // Ambil todo_lists beserta todo_checklist_items dan progress user
-        $todoLists = TodoList::with(['todoChecklistItems.progress' => function ($query) use ($userId) {
-            $query->where('user_id', $userId);
-        }])->get();
+        $todoLists = TodoList::with([
+            'todoChecklistItems.progress' => function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            }
+        ])->get();
 
         return response()->json($todoLists);
     }

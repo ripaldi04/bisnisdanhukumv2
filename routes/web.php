@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [FrontController::class, 'index'])->name('index');
 
+Route::get('/landing', [FrontController::class, 'landing'])->name('landing');
+
 Route::get('/articles', [FrontController::class, 'articles'])->name('articles.index');
 Route::get('/articles/{slug}', [FrontController::class, 'detailArticle'])->name('articles.show');
 
