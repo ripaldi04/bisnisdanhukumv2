@@ -34,7 +34,7 @@ class SendBroadcastEmail implements ShouldQueueAfterCommit
 
         foreach ($recipients as $email) {
             Mail::to($email)->queue(
-                new BroadcastEmailMailable($broadcastEmail->title, $broadcastEmail->content)
+                new BroadcastEmailMailable($broadcastEmail->title, $broadcastEmail->content, $broadcastEmail->file_path)
             );
         }
     }

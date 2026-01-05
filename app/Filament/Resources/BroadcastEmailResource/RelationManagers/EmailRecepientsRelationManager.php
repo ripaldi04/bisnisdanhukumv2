@@ -31,7 +31,7 @@ class EmailRecepientsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('Email Recipients')
+            ->recordTitleAttribute('email')
             ->columns([
                 TextColumn::make('email')->label('Email'),
 
@@ -55,7 +55,10 @@ class EmailRecepientsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                // Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make(),
+                Tables\Actions\AttachAction::make()
+                    ->preloadRecordSelect()
+                    ->multiple(),
             ])
             ->actions([
                 // Tables\Actions\EditAction::make(),

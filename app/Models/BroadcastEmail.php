@@ -10,6 +10,12 @@ class BroadcastEmail extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'title',
+        'content',
+        'file_path',
+    ];
+
     protected $dispatchesEvents = [
         'created' => \App\Events\BroadcastEmailCreated::class,
     ];
