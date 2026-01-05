@@ -120,7 +120,7 @@ unset($__errorArgs, $__bag); ?>
                     <div class="flex">
                         <span
                             class="inline-flex items-center rounded-l-md border border-slate-300 bg-slate-100 px-3 text-sm text-slate-700">
-                            🇮🇩 +62
+                            +62
                         </span>
                         <input type="text" name="whatsapp" required value="<?php echo e(old('whatsapp')); ?>"
                             placeholder="812xxxxxxx"
@@ -157,11 +157,12 @@ unset($__errorArgs, $__bag); ?>
 
 
 
-            
             <button id="order-button" type="submit"
-                class="w-full rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-3 transition">
-                Download Gratis
+                style="background:#1d4ed8;color:#fff;padding:12px;border-radius:10px;width:100%;font-weight:800;">
+                Download Now
             </button>
+
+
 
             <p class="text-[10px] text-slate-500 text-center leading-relaxed">
                 Dengan melanjutkan, Anda setuju dengan ketentuan layanan yang berlaku.
