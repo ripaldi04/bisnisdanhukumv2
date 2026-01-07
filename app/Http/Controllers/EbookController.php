@@ -41,7 +41,7 @@ class EbookController extends Controller
             ->limit(6)
             ->get();
 
-        return view('ebooks.show', compact('ebook', 'hasPaid', 'otherEbooks'));
+        return view('ebooks.landing', compact('ebook', 'hasPaid', 'otherEbooks'));
     }
 
     /**
