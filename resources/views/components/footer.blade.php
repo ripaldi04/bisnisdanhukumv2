@@ -4,10 +4,9 @@
         <div>
 
             <!-- Tagline -->
-            <p class="mb-4 text-lg text-justify">Bisnis dan Hukum adalah lorem ipsum dolor sit amet, consectetur
-                adipiscing elit. Nam elementum ultricies dolor, sed pulvinar quam euismod quis. In condimentum lacus
-                lacus, vel ornare odio dignissim vel. Quisque ut erat nulla. Phasellus quis lorem vitae ipsum tempor
-                rutrum. Mauris viverra nec ex vel sodales. </p>
+            <p class="mb-4 text-lg text-justify">Bisnis dan Hukum adalah Platform edukasi yang menyediakan kelas online,
+                e-book, dan materi pembelajaran seputar bisnis dan hukum yang praktis, mudah dipahami, dan bisa langsung
+                diterapkan.</p>
         </div>
 
         <!-- Column 2 -->

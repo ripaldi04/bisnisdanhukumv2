@@ -7,33 +7,27 @@
 
 @section('content')
     {{-- Hero --}}
-    <div class="bg-white py-16 min-h-[70vh]">
-        <div class="container mx-auto px-6 lg:px-20 flex flex-col lg:flex-row items-center justify-between">
-            <!-- Left Side (Copywriting) -->
-            <div class="text-center lg:text-left lg:w-1/2 space-y-6">
-                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 lg:leading-snug">
+    <div class="py-16 min-h-[70vh] bg-cover bg-no-repeat bg-right"
+        style="background-image: url('{{ asset('assets/Banner Website.webp') }}');">
+        <div class="container mx-auto px-6 lg:px-20 min-h-[70vh] flex items-center">
+            {{-- Batasi area teks di kiri --}}
+            <div class="max-w-xl lg:max-w-2xl">
+                <h1 class="text-4xl md:text-5xl font-bold text-dark lg:leading-snug">
                     {{ $course->banner_main_text }}
                 </h1>
-                <p class="text-lg text-gray-600">
+
+                <p class="text-lg text-dark mt-6">
                     {{ $course->banner_text }}
                 </p>
-                <a href="{{ route('learn') }}"
-                    class="inline-block px-8 py-3 bg-[#D4AF37] text-white font-medium rounded-lg text-lg shadow-md hover:bg-yellow-700 transition">
+
+                <a href="{{ route('ebooks.index') }}"
+                    class="inline-block mt-8 px-8 py-3 bg-[#D4AF37] text-white font-medium rounded-lg text-lg shadow-md hover:bg-yellow-700 transition">
                     Mulai Sekarang
                 </a>
             </div>
-
-            <!-- Right Side (Image/Vector) -->
-            <div class="mt-8 lg:mt-0 lg:w-1/2">
-                @php
-                    $illustration = $course->illustration
-                        ? Storage::url($course->illustration)
-                        : asset('assets/hero-vector.png');
-                @endphp
-                <img src={{ $illustration }} alt="Books Illustration" class="w-full max-w-md mx-auto lg:max-w-lg">
-            </div>
         </div>
     </div>
+
     {{-- Hero --}}
 
     {{-- Statistic --}}

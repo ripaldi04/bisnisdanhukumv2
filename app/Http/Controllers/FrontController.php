@@ -9,6 +9,7 @@ use App\Models\Book;
 use App\Models\Category;
 use App\Models\Course;
 use App\Models\Ebook;
+use App\Models\EbookLandingDescription;
 use App\Models\Faq;
 use App\Models\Module;
 use App\Models\PaymentMethod;
@@ -37,7 +38,8 @@ class FrontController extends Controller
         $benefits = Benefit::where('is_active', true)->get();
         $uniquenesses = Uniqueness::where('is_active', true)->get();
         $articles = Article::where('status', 'Published')->orderBy('viewed', 'desc')->take(3)->get();
-        return view('home', compact('testimonials', 'faqs', 'course', 'benefits', 'uniquenesses', 'articles'));
+        $ebooks = Ebook::with('landingDescription')->where('status', 'published')->latest()->take(3)->get();
+        return view('home', compact('testimonials', 'faqs', 'course', 'benefits', 'uniquenesses', 'articles', 'ebooks'));
     }
 
     public function landing()
