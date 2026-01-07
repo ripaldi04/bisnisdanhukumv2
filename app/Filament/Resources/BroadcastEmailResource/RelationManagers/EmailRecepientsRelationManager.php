@@ -22,8 +22,10 @@ class EmailRecepientsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('Email Recipients')
+                Forms\Components\TextInput::make('email')
+                    ->label('Email Recipients')
                     ->required()
+                    ->email()
                     ->maxLength(255),
             ]);
     }
@@ -33,7 +35,7 @@ class EmailRecepientsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('email')
             ->columns([
-                TextColumn::make('email')->label('Email'),
+                TextColumn::make('email')->label('Email Recipients'),
 
                 IconColumn::make('is_registered')
                     ->boolean()

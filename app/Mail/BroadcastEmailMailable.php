@@ -34,7 +34,7 @@ class BroadcastEmailMailable extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Akademi Keluarga Cerdas | ' . $this->title,
+            subject: $this->title,
         );
     }
 
