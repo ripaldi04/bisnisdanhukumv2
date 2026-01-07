@@ -117,8 +117,8 @@
                 </div>
 
                 <button id="order-button" type="submit"
-                    style="background:#1d4ed8;color:#fff;padding:12px;border-radius:10px;width:100%;font-weight:800;">
-                    Download Gratis
+                    style="background:#FFD700;color:#fff;padding:12px;border-radius:10px;width:100%;font-weight:800;">
+                    Download Now
                 </button>
 
                 <p class="text-[10px] text-slate-500 text-center leading-relaxed">
@@ -189,7 +189,7 @@
                 </div>
 
                 <button id="order-button" type="submit"
-                    style="background:#1d4ed8;color:#fff;padding:12px;border-radius:10px;width:100%;font-weight:800;">
+                    style="background:#FFD700;color:#fff;padding:12px;border-radius:10px;width:100%;font-weight:800;">
                     Beli Sekarang
                 </button>
 
@@ -224,17 +224,17 @@
                                 onSuccess: function(result) {
                                     alert("Pembayaran berhasil!");
                                     window.location.href =
-                                    '{{ route('ebooks.show', $ebook->id) }}';
+                                        '{{ route('ebooks.show', $ebook->id) }}';
                                 },
                                 onPending: function(result) {
                                     alert("Menunggu pembayaran!");
                                     window.location.href =
-                                    '{{ route('ebooks.show', $ebook->id) }}';
+                                        '{{ route('ebooks.show', $ebook->id) }}';
                                 },
                                 onError: function(result) {
                                     alert("Pembayaran gagal!");
                                     window.location.href =
-                                    '{{ route('ebooks.show', $ebook->id) }}';
+                                        '{{ route('ebooks.show', $ebook->id) }}';
                                 },
                                 onClose: function() {
                                     alert('Halaman dibuka tanpa menyelesaikan pembayaran');
