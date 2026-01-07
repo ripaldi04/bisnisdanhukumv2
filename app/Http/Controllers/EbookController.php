@@ -93,6 +93,9 @@ class EbookController extends Controller
         // Tambahkan email ke daftar penerima broadcast otomatis
         EmailRecipient::firstOrCreate(['email' => $data['email']]);
 
+        // Update jumlah download
+        $ebook->increment('downloads');
+
         // Redirect ke WhatsApp dengan template message
         $waNumber = Setting::where('key', 'whatsapp_number')->value('value');
         $template = Setting::where('key', 'whatsapp_message_template')->value('value');
@@ -107,10 +110,27 @@ class EbookController extends Controller
             ]);
 
             $waLink = "https://wa.me/{$waNumber}?text=" . urlencode($message);
+
+            // Jika AJAX request, return JSON
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'whatsapp_url' => $waLink,
+                    'new_downloads' => $ebook->downloads
+                ]);
+            }
+
             return redirect()->away($waLink);
         }
 
         // Fallback jika WhatsApp belum dikonfigurasi
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'WhatsApp belum dikonfigurasi oleh admin.'
+            ]);
+        }
+
         return redirect()->route('ebooks.show', $ebook->id)
             ->with('error', 'WhatsApp belum dikonfigurasi oleh admin.');
     }

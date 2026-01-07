@@ -51,7 +51,7 @@
                         <div class="flex items-center gap-3">
                             <span>{{ $ebook->views }} views</span>
                             <span>•</span>
-                            <span>{{ $ebook->downloads }} downloads</span>
+                            <span class="downloads-count">{{ $ebook->downloads }} downloads</span>
                         </div>
 
                         @if ($ebook->is_free)
@@ -71,7 +71,7 @@
         {{-- FORM DOWNLOAD --}}
         @if ($ebook->is_free)
             <form id="order-form" method="POST" action="{{ route('ebooks.download-form', $ebook->id) }}"
-                class="space-y-6 mt-10">
+                class="space-y-6 mt-10" onsubmit="handleDownload(event)">
                 @csrf
 
                 {{-- LENGKAPI DATA --}}
@@ -201,6 +201,41 @@
     </div>
 
     <script>
+        function handleDownload(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update download count on page
+                        const downloadElement = document.querySelector('.downloads-count');
+                        if (downloadElement) {
+                            const currentCount = parseInt(downloadElement.textContent);
+                            downloadElement.textContent = currentCount + 1;
+                        }
+                        // Redirect to WhatsApp
+                        window.location.href = data.whatsapp_url;
+                    } else {
+                        alert(data.message || 'Terjadi kesalahan saat memproses download.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat memproses permintaan.');
+                });
+        }
+
         @if (!$ebook->is_free)
             document.getElementById('purchase-form').addEventListener('submit', function(e) {
                 e.preventDefault();

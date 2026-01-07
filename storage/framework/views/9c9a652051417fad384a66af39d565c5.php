@@ -6,7 +6,7 @@
             <!-- Tagline -->
             <p class="mb-4 text-lg text-justify">Bisnis dan Hukum adalah Platform edukasi yang menyediakan kelas online,
                 e-book, dan materi pembelajaran seputar bisnis dan hukum yang praktis, mudah dipahami, dan bisa langsung
-                diterapkan. </p>
+                diterapkan.</p>
         </div>
 
         <!-- Column 2 -->
