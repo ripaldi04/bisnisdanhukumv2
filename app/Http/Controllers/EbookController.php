@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Ebook;
 use App\Models\EbookTransaction;
 use App\Models\EbookDownload;
+use App\Models\EmailRecipient;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -89,6 +90,9 @@ class EbookController extends Controller
             'downloaded_at' => now(),
         ]);
 
+        // Tambahkan email ke daftar penerima broadcast otomatis
+        EmailRecipient::firstOrCreate(['email' => $data['email']]);
+
         // Redirect ke WhatsApp dengan template message
         $waNumber = Setting::where('key', 'whatsapp_number')->value('value');
         $template = Setting::where('key', 'whatsapp_message_template')->value('value');
@@ -167,6 +171,9 @@ class EbookController extends Controller
             'email' => $data['email'],
             'whatsapp' => $data['whatsapp'],
         ]);
+
+        // Tambahkan email ke daftar penerima broadcast otomatis
+        EmailRecipient::firstOrCreate(['email' => $data['email']]);
 
         // MIDTRANS CONFIG
         \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
