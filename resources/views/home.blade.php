@@ -6,27 +6,52 @@
 @include('components.navbar')
 
 @section('content')
-    {{-- Hero --}}
-    <div class="py-16 min-h-[70vh] bg-cover bg-no-repeat bg-right"
-        style="background-image: url('{{ asset('assets/Banner Website.webp') }}');">
-        <div class="container mx-auto px-6 lg:px-20 min-h-[70vh] flex items-center">
-            {{-- Batasi area teks di kiri --}}
-            <div class="max-w-xl lg:max-w-2xl">
-                <h1 class="text-4xl md:text-5xl font-bold text-dark lg:leading-snug">
-                    {{ $course->banner_main_text }}
-                </h1>
+    {{-- Hero (rapih di mobile) --}}
+    <section class="relative overflow-hidden">
+        {{-- Background image --}}
+        <div class="absolute inset-0 bg-cover bg-no-repeat
+                bg-[position:top_center] sm:bg-[position:center_right] lg:bg-right"
+            style="background-image: url('{{ asset('assets/Banner Website.webp') }}');">
+        </div>
 
-                <p class="text-lg text-dark mt-6">
-                    {{ $course->banner_text }}
-                </p>
+        {{-- Overlay biar teks kebaca (lebih kuat di mobile) --}}
+        <div
+            class="absolute inset-0
+                bg-gradient-to-b from-white/95 via-white/80 to-white/10
+                sm:bg-gradient-to-r sm:from-white/90 sm:via-white/60 sm:to-transparent">
+        </div>
 
-                <a href="{{ route('ebooks.index') }}"
-                    class="inline-block mt-8 px-8 py-3 bg-[#D4AF37] text-white font-medium rounded-lg text-lg shadow-md hover:bg-yellow-700 transition">
-                    Mulai Sekarang
-                </a>
+        {{-- Content --}}
+        <div
+            class="relative container mx-auto px-4 sm:px-6 lg:px-20
+                min-h-[60vh] lg:min-h-[70vh]
+                flex items-start lg:items-center
+                py-12 lg:py-16">
+            <div class="w-full max-w-xl lg:max-w-2xl">
+                {{-- Card khusus mobile supaya tidak ketimpa objek banner --}}
+                <div
+                    class="bg-white/80 backdrop-blur-sm rounded-2xl p-5 sm:p-7
+                        lg:bg-transparent lg:backdrop-blur-0 lg:p-0">
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-dark leading-tight lg:leading-snug">
+                        {{ $course->banner_main_text }}
+                    </h1>
+
+                    <p class="text-base sm:text-lg text-dark mt-4 sm:mt-6">
+                        {{ $course->banner_text }}
+                    </p>
+
+                    <a href="{{ route('ebooks.index') }}"
+                        class="inline-flex justify-center mt-6 sm:mt-8
+                          w-full sm:w-auto
+                          px-8 py-3 bg-[#D4AF37] text-white font-medium rounded-lg text-lg
+                          shadow-md hover:bg-yellow-700 transition">
+                        Mulai Sekarang
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
+
 
     {{-- Hero --}}
 
@@ -156,7 +181,7 @@
     </section>
     {{-- Why --}}
 
-    @include('components.testimonial')
+    {{-- @include('components.testimonial') --}}
     @include('components.faq')
 @endsection
 
