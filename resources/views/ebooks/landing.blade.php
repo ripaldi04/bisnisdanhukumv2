@@ -295,8 +295,15 @@
                                 'content')
                         }
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (response.status === 419) {
+                            alert('Sesi telah kedaluwarsa. Silakan refresh halaman dan coba lagi.');
+                            return;
+                        }
+                        return response.json();
+                    })
                     .then(data => {
+                        if (!data) return; // Jika 419, sudah handle di atas
                         if (data.success) {
                             // Trigger Midtrans popup
                             window.snap.pay(data.snap_token, {

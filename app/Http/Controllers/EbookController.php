@@ -170,25 +170,58 @@ class EbookController extends Controller
 
         // Basic email validation (don't sanitize as it might break valid emails)
         if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Format email tidak valid.'
+                ]);
+            }
             return redirect()->route('ebooks.show', $ebook->id)
                 ->withErrors(['email' => 'Format email tidak valid.'])
                 ->withInput();
         }
 
-        // Buat transaksi baru
-        $trx = EbookTransaction::create([
-            'user_id' => null, // Tidak ada user karena tidak login
-            'ebook_id' => $ebook->id,
-            'amount' => $ebook->price,
-            'trx_id' => 'EBK-' . time() . rand(1000, 9999),
-            'status' => 'Pending',
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'whatsapp' => $data['whatsapp'],
-        ]);
+        // Cek apakah email sudah pernah membeli ebook ini
+        if (
+            EbookTransaction::where('ebook_id', $ebook->id)
+                ->where('email', $data['email'])
+                ->where('status', 'Paid')
+                ->exists()
+        ) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Email Anda sudah pernah membeli ebook ini sebelumnya.'
+                ]);
+            }
+            return redirect()->route('ebooks.show', $ebook->id)
+                ->with('error', 'Email Anda sudah pernah membeli ebook ini sebelumnya.');
+        }
 
-        // Tambahkan email ke daftar penerima broadcast otomatis
-        EmailRecipient::firstOrCreate(['email' => $data['email']]);
+        // Cek apakah ada transaksi pending dengan email ini untuk ebook ini
+        $pending = EbookTransaction::where('ebook_id', $ebook->id)
+            ->where('email', $data['email'])
+            ->where('status', 'Pending')
+            ->first();
+
+        if ($pending) {
+            $trx = $pending;
+        } else {
+            // Buat transaksi baru
+            $trx = EbookTransaction::create([
+                'user_id' => null, // Tidak ada user karena tidak login
+                'ebook_id' => $ebook->id,
+                'amount' => $ebook->price,
+                'trx_id' => 'EBK-' . time() . rand(1000, 9999),
+                'status' => 'Pending',
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'whatsapp' => $data['whatsapp'],
+            ]);
+
+            // Tambahkan email ke daftar penerima broadcast otomatis
+            EmailRecipient::firstOrCreate(['email' => $data['email']]);
+        }
 
         // MIDTRANS CONFIG
         \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
