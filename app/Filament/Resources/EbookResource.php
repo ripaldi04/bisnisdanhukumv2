@@ -43,12 +43,24 @@ class EbookResource extends Resource
                             ->label('Cover Ebook')
                             ->directory('ebooks/covers')
                             ->image()
+                            ->preserveFilenames()
+                            ->deleteUploadedFileUsing(function ($record, $file) {
+                                if ($record && $record->cover_image) {
+                                    \Storage::disk('public')->delete($record->cover_image);
+                                }
+                            })
                             ->required(),
 
                         Forms\Components\FileUpload::make('file_path')
                             ->label('File PDF Ebook')
                             ->directory('ebooks/files')
                             ->acceptedFileTypes(['application/pdf'])
+                            ->preserveFilenames()
+                            ->deleteUploadedFileUsing(function ($record, $file) {
+                                if ($record && $record->file_path) {
+                                    \Storage::disk('public')->delete($record->file_path);
+                                }
+                            })
                             ->required(),
                     ]),
                 Forms\Components\Section::make('Pengaturan')
