@@ -74,6 +74,12 @@ class EbookController extends Controller
 
         // Cek apakah email sudah pernah download ebook ini
         if (EbookDownload::hasDownloaded($ebook->id, $data['email'])) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Email Anda sudah pernah mendownload ebook ini sebelumnya.'
+                ]);
+            }
             return redirect()->route('ebooks.show', $ebook->id)
                 ->with('error', 'Email Anda sudah pernah mendownload ebook ini sebelumnya.');
         }
@@ -167,17 +173,6 @@ class EbookController extends Controller
             return redirect()->route('ebooks.show', $ebook->id)
                 ->withErrors(['email' => 'Format email tidak valid.'])
                 ->withInput();
-        }
-
-        // Cek apakah email sudah pernah membeli ebook ini
-        if (
-            EbookTransaction::where('ebook_id', $ebook->id)
-                ->where('email', $data['email'])
-                ->where('status', 'Paid')
-                ->exists()
-        ) {
-            return redirect()->route('ebooks.show', $ebook->id)
-                ->with('error', 'Email Anda sudah pernah membeli ebook ini sebelumnya.');
         }
 
         // Buat transaksi baru
