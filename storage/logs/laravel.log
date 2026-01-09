@@ -5471,3 +5471,11 @@ Did you mean one of these?
 #69 D:\\project coding\\bisnisdanhukum\\new backupan ori dari versi sebelumnya\\proj\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(23): require_once('D:\\\\project codi...')
 #70 {main}
 "} 
+[2026-01-09 14:43:18] local.ERROR: Maximum execution time of 60 seconds exceeded {"userId":15,"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Maximum execution time of 60 seconds exceeded at D:\\project coding\\bisnisdanhukum\\new backupan ori dari versi sebelumnya\\proj\\storage\\framework\\views\\3a9bd1f82672ae5b9a8ccebe874832dc.php:6)
+[stacktrace]
+#0 {main}
+"} 
+[2026-01-09 14:48:06] local.ERROR: Maximum execution time of 60 seconds exceeded {"userId":15,"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Maximum execution time of 60 seconds exceeded at D:\\project coding\\bisnisdanhukum\\new backupan ori dari versi sebelumnya\\proj\\storage\\framework\\views\\5e56b7f1dc5c38bca0c76c2924097c19.php:1)
+[stacktrace]
+#0 {main}
+"} 
