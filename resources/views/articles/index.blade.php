@@ -55,7 +55,7 @@
                                     class="text-black font-semibold hover:underline">
                                     {{ $article->title }}
                                 </a>
-                                <p class="text-sm text-gray-500">{{ $article->updated_at->format('d M Y') }}</p>
+                                <p class="text-sm text-gray-500">{{ $article->created_at->format('d M Y') }}</p>
                             </div>
                         </div>
                     @empty

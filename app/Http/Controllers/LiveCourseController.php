@@ -20,27 +20,27 @@ class LiveCourseController extends Controller
     public function show($id)
     {
         $liveCourse = LiveCourse::findOrFail($id);
-        
+
         $userHasAccess = false;
         if (auth()->check()) {
             $user = auth()->user();
-            
+
             // Check if user has paid for this course
             $hasPaid = LiveCourseTransaction::where('user_id', $user->id)
                 ->where('live_course_id', $liveCourse->id)
                 ->where('status', 'Paid')
                 ->exists();
-                
+
             // For free courses, grant immediate access
             if ($liveCourse->is_free && !$hasPaid) {
                 // Create free access transaction
                 $this->generateAccess($user, $liveCourse);
                 $hasPaid = true;
             }
-            
+
             $userHasAccess = $hasPaid;
         }
-        
+
         return view('live-courses.show', compact('liveCourse', 'userHasAccess'));
     }
 
@@ -97,7 +97,8 @@ class LiveCourseController extends Controller
                     'quantity' => 1,
                     'name' => $liveCourse->title,
                 ]
-            ]
+            ],
+            'enabled_payments' => \App\Services\MidtransConfig::ENABLED_PAYMENTS
         ];
 
         // SNAP TOKEN

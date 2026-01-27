@@ -17,9 +17,6 @@
     <div class="max-w-3xl mx-auto px-4 py-10">
         {{-- HEADER --}}
         <div class="text-center mb-10">
-            <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900">
-                {{ $ebook->title }}
-            </h1>
             <p class="text-slate-600 mt-3">
                 Ebook Terbaik untuk Bisnis dan Hukum
             </p>
@@ -38,17 +35,13 @@
                 <div class="p-6 md:p-8 space-y-6">
                     {{-- TITLE --}}
                     <div class="text-center space-y-3">
-                        <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 leading-tight">
-                            {{ $ebook->title }}
-                        </h2>
-
                         <div class="text-slate-600 prose prose-slate max-w-none text-left">
-                            {!! $ebook->landingDescription->description ?? $ebook->description !!}
+                            {!! Str::markdown($ebook->landingDescription->description ?? $ebook->description) !!}
                         </div>
                     </div>
 
                     {{-- STATS + PRICE --}}
-                    <div class="flex items-center justify-between text-sm text-slate-500">
+                    <div class="flex    items-center justify-between text-sm text-slate-500">
                         <div class="flex items-center gap-3">
                             <span>{{ $ebook->views }} views</span>
                             <span>•</span>

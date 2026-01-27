@@ -37,6 +37,7 @@ class EbookLandingDescriptionResource extends Resource
                     ->required(),
                 RichEditor::make('description')
                     ->label('Description')
+                    ->asPlainText()
                     ->required(),
             ]);
     }
@@ -48,6 +49,7 @@ class EbookLandingDescriptionResource extends Resource
                 TextColumn::make('ebook.title')
                     ->label('Ebook'),
                 TextColumn::make('description')
+                    ->markdown()
                     ->limit(50),
             ])
             ->filters([

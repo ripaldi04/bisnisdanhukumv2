@@ -17,10 +17,6 @@
     <div class="max-w-3xl mx-auto px-4 py-10">
         
         <div class="text-center mb-10">
-            <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900">
-                <?php echo e($ebook->title); ?>
-
-            </h1>
             <p class="text-slate-600 mt-3">
                 Ebook Terbaik untuk Bisnis dan Hukum
             </p>
@@ -39,19 +35,14 @@
                 <div class="p-6 md:p-8 space-y-6">
                     
                     <div class="text-center space-y-3">
-                        <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 leading-tight">
-                            <?php echo e($ebook->title); ?>
-
-                        </h2>
-
                         <div class="text-slate-600 prose prose-slate max-w-none text-left">
-                            <?php echo $ebook->landingDescription->description ?? $ebook->description; ?>
+                            <?php echo Str::markdown($ebook->landingDescription->description ?? $ebook->description); ?>
 
                         </div>
                     </div>
 
                     
-                    <div class="flex items-center justify-between text-sm text-slate-500">
+                    <div class="flex    items-center justify-between text-sm text-slate-500">
                         <div class="flex items-center gap-3">
                             <span><?php echo e($ebook->views); ?> views</span>
                             <span>•</span>
@@ -343,8 +334,15 @@ unset($__errorArgs, $__bag); ?>
                                 'content')
                         }
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (response.status === 419) {
+                            alert('Sesi telah kedaluwarsa. Silakan refresh halaman dan coba lagi.');
+                            return;
+                        }
+                        return response.json();
+                    })
                     .then(data => {
+                        if (!data) return; // Jika 419, sudah handle di atas
                         if (data.success) {
                             // Trigger Midtrans popup
                             window.snap.pay(data.snap_token, {

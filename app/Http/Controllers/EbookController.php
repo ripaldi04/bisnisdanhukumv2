@@ -205,6 +205,12 @@ class EbookController extends Controller
             ->first();
 
         if ($pending) {
+            // Update data transaksi dengan data terbaru jika berbeda
+            $pending->update([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'whatsapp' => $data['whatsapp'],
+            ]);
             $trx = $pending;
         } else {
             // Buat transaksi baru

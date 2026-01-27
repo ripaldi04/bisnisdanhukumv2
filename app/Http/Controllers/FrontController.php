@@ -38,8 +38,9 @@ class FrontController extends Controller
         $benefits = Benefit::where('is_active', true)->get();
         $uniquenesses = Uniqueness::where('is_active', true)->get();
         $articles = Article::where('status', 'Published')->orderBy('viewed', 'desc')->take(3)->get();
-        $ebooks = Ebook::with('landingDescription')->where('status', 'published')->latest()->take(3)->get();
-        return view('home', compact('testimonials', 'faqs', 'course', 'benefits', 'uniquenesses', 'articles', 'ebooks'));
+        $ebooks = Ebook::with('landingDescription')->where('status', 'published')->latest()->take(8)->get();
+        $banners = \App\Models\Banner::active()->ordered()->get();
+        return view('home', compact('testimonials', 'faqs', 'course', 'benefits', 'uniquenesses', 'articles', 'ebooks', 'banners'));
     }
 
     public function landing()

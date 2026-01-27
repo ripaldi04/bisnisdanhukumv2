@@ -38,7 +38,7 @@ class OfflineEventController extends Controller
             }
         }
 
-        return view('events.show', compact('event','hasTicket','trxId'));
+        return view('events.show', compact('event', 'hasTicket', 'trxId'));
     }
 
     // Beli tiket event
@@ -96,7 +96,8 @@ class OfflineEventController extends Controller
                     'quantity' => 1,
                     'name' => $event->title,
                 ]
-            ]
+            ],
+            'enabled_payments' => \App\Services\MidtransConfig::ENABLED_PAYMENTS
         ];
 
         // SNAP TOKEN
