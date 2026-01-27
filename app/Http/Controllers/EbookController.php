@@ -9,7 +9,10 @@ use App\Models\EmailRecipient;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use App\Mail\BroadcastEmailMailable;
 
 class EbookController extends Controller
 {
@@ -96,11 +99,34 @@ class EbookController extends Controller
             'downloaded_at' => now(),
         ]);
 
-        // Tambahkan email ke daftar penerima broadcast otomatis
-        EmailRecipient::firstOrCreate(['email' => $data['email']]);
-
         // Update jumlah download
         $ebook->increment('downloads');
+
+        // Kirim ebook gratis via email
+        $title = $ebook->title;
+        $content = '
+    <p>Halo <strong>' . e($data['name']) . '</strong>,</p>
+
+    <p>Terima kasih telah berkunjung ke website <strong>Bisnis dan Hukum</strong> dan mengunduh ebook gratis kami.</p>
+
+    <p>Kami sangat mengapresiasi ketertarikan Anda pada materi:</p>
+
+    <div style="background:#f9fafb; padding:16px; border-radius:8px; margin:16px 0; border-left:4px solid #D4AF37;">
+        <strong>' . e($ebook->title) . '</strong>
+    </div>
+
+    <p>Sebagai bentuk apresiasi, kami lampirkan file ebook lengkap dalam email ini. Ebook ini dirancang untuk memberikan pemahaman yang praktis, relevan, dan mudah diterapkan dalam dunia bisnis dan hukum.</p>
+
+    <p>Silakan unduh dan pelajari materi di dalamnya. Semoga ebook ini dapat menambah wawasan, membuka sudut pandang baru, serta membantu Anda mengambil keputusan yang lebih tepat.</p>
+
+    <p>Apabila Anda memiliki pertanyaan atau ingin berdiskusi lebih lanjut, jangan ragu untuk menghubungi kami melalui email atau WhatsApp. Kami dengan senang hati siap membantu.</p>
+
+    <p>Terima kasih atas kepercayaan Anda. Semoga bermanfaat dan membawa keberkahan.</p>
+
+    <p>Salam hangat,<br>
+    <strong>Tim Bisnis dan Hukum</strong></p>
+';
+        Mail::to($data['email'])->queue(new BroadcastEmailMailable($title, $content, $ebook->file_path));
 
         // Redirect ke WhatsApp dengan template message
         $waNumber = Setting::where('key', 'whatsapp_number')->value('value');
@@ -224,9 +250,6 @@ class EbookController extends Controller
                 'email' => $data['email'],
                 'whatsapp' => $data['whatsapp'],
             ]);
-
-            // Tambahkan email ke daftar penerima broadcast otomatis
-            EmailRecipient::firstOrCreate(['email' => $data['email']]);
         }
 
         // MIDTRANS CONFIG
@@ -400,30 +423,73 @@ class EbookController extends Controller
     // Callback Midtrans untuk transaksi tanpa login
     public function callback(Request $request)
     {
-        $notif = new \Midtrans\Notification();
+        try {
+            Log::info('MIDTRANS CALLBACK RAW', $request->all());
 
-        $trx = EbookTransaction::where('trx_id', $notif->order_id)->first();
+            // MIDTRANS CONFIG
+            \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
+            \Midtrans\Config::$isProduction = false;
+            \Midtrans\Config::$isSanitized = true;
+            \Midtrans\Config::$is3ds = true;
 
-        if (!$trx)
-            return;
+            $notif = new \Midtrans\Notification();
 
-        // Simpan data yang penting
-        $trx->payment_type = $notif->payment_type;
-        $trx->midtrans_transaction_id = $notif->transaction_id;
+            Log::info('MIDTRANS NOTIF', [
+                'order_id' => $notif->order_id,
+                'transaction_status' => $notif->transaction_status,
+                'payment_type' => $notif->payment_type,
+            ]);
 
-        if ($notif->transaction_status == 'settlement') {
-            $trx->status = 'Paid';
-            $trx->paid_at = now();
+            $trx = EbookTransaction::where('trx_id', $notif->order_id)->first();
 
-            // Simpan email ke session untuk download tanpa login
-            session(['purchased_email' => $trx->email]);
-        } elseif ($notif->transaction_status == 'expire') {
-            $trx->status = 'Expired';
-        } elseif ($notif->transaction_status == 'cancel') {
-            $trx->status = 'Failed';
+            if (!$trx) {
+                Log::warning('MIDTRANS: trx not found', [
+                    'order_id' => $notif->order_id
+                ]);
+
+                return response()->json(['status' => 'trx not found'], 200);
+            }
+
+            $trx->payment_type = $notif->payment_type;
+            $trx->midtrans_transaction_id = $notif->transaction_id;
+
+            if ($notif->transaction_status === 'settlement' || $notif->transaction_status === 'capture') {
+                $trx->status = 'Paid';
+                $trx->paid_at = now();
+
+                // Kirim ebook berbayar via email setelah pembayaran berhasil
+                $ebook = $trx->ebook;
+                if ($ebook) {
+                    $title = $ebook->title;
+                    $content = '
+                        <p>Halo ' . $trx->name . ',</p>
+                        <p>Terima kasih telah menyelesaikan pembayaran untuk ebook: <strong>' . $ebook->title . '</strong>.</p>
+                        <p>Pembayaran Anda telah dikonfirmasi dan ebook lengkap telah dilampirkan dalam email ini.</p>
+                        <p>Silakan download file terlampir dan mulai menikmati materi yang bermanfaat. Ebook ini berisi pengetahuan mendalam yang dapat membantu Anda dalam bidang bisnis dan hukum.</p>
+                        <p>Jika Anda mengalami kesulitan download atau memiliki pertanyaan, hubungi kami melalui WhatsApp atau email.</p>
+                        <p>Semoga ebook ini memberikan nilai tambah bagi perjalanan Anda. Sukses selalu!</p>
+                        <p>Salam hangat,<br>Tim Bisnis dan Hukum</p>
+                    ';
+                    Mail::to($trx->email)->queue(new BroadcastEmailMailable($title, $content, $ebook->file_path));
+                }
+            } elseif ($notif->transaction_status === 'expire') {
+                $trx->status = 'Expired';
+            } elseif ($notif->transaction_status === 'cancel') {
+                $trx->status = 'Failed';
+            }
+
+            $trx->save();
+
+            return response()->json(['status' => 'ok'], 200);
+
+        } catch (\Throwable $e) {
+            Log::error('MIDTRANS CALLBACK ERROR', [
+                'message' => $e->getMessage()
+            ]);
+
+            // TETAP BALIK 200 supaya Midtrans tidak retry terus
+            return response()->json(['status' => 'error'], 200);
         }
-
-        $trx->save();
     }
 
 }

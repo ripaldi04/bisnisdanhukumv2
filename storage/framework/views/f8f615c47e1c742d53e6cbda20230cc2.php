@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('style'); ?>
     <link rel="icon" href="<?php echo e(asset('assets/logo/favicon.png')); ?>" type="image/x-icon" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />

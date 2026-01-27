@@ -12,10 +12,15 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         // TRUST PROXIES (ngrok, cloudflare, reverse proxy)
-        // FIX MIXED CONTENT NGROK
         $middleware->trustProxies('*');
 
+        // WHITELIST CSRF UNTUK MIDTRANS CALLBACK
+        $middleware->validateCsrfTokens(except: [
+            'ebooks/midtrans/callback',
+            'midtrans/callback',
+        ]);
     })
+
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();

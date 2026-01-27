@@ -17,6 +17,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+/*
+// Commented out to hide from Filament navigation
 class EmailRecipientResource extends Resource
 {
     protected static ?string $model = EmailRecipient::class;
@@ -71,3 +73,4 @@ class EmailRecipientResource extends Resource
         ];
     }
 }
+*/
